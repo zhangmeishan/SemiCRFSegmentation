@@ -10,12 +10,10 @@
 
 
 #include "N3L.h"
-#include "NNCRF.h"
+#include "Driver.h"
 #include "Options.h"
 #include "Instance.h"
 #include "Example.h"
-
-
 #include "Pipe.h"
 #include "Utf.h"
 
@@ -26,10 +24,6 @@ class Segmentor {
 
 
 public:
-	Alphabet m_labelAlphabet;
-	Alphabet m_seglabelAlphabet;
-	vector<int> maxLabelLength;
-	hash_set<string> ignoreLabels;
 	hash_map<string, int> m_feat_stats;
 	hash_map<string, int> m_word_stats;
 	hash_map<string, int> m_char_stats;
@@ -40,7 +34,7 @@ public:
 
 	Pipe m_pipe;
 
-	NNCRF m_classifier;
+	Driver m_driver;
 
 
 public:
@@ -56,8 +50,8 @@ public:
 	void extractLinearFeatures(vector<string>& features, const Instance* pInstance, int idx);
 	void extractFeature(Feature& feat, const Instance* pInstance, int idx);
 
-	void convert2Example(const Instance* pInstance, Example& exam, bool bTrain = false);
-	void initialExamples(const vector<Instance>& vecInsts, vector<Example>& vecExams, bool bTrain = false);
+	void convert2Example(const Instance* pInstance, Example& exam);
+	void initialExamples(const vector<Instance>& vecInsts, vector<Example>& vecExams);
 
 public:
 	void train(const string& trainFile, const string& devFile, const string& testFile, const string& modelFile, const string& optionFile);

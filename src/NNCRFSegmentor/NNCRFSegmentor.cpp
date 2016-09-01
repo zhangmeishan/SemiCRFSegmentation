@@ -26,10 +26,7 @@ int Segmentor::createAlphabet(const vector<Instance>& vecInsts) {
 
 	int numInstance;
 
-	m_labelAlphabet.clear();
-	m_seglabelAlphabet.clear();
-	ignoreLabels.clear();
-
+	m_driver._modelparams.labelAlpha.clear();
 
 	int typeNum = vecInsts[0].typefeatures[0].size();
 	m_type_stats.resize(typeNum);
@@ -50,15 +47,7 @@ int Segmentor::createAlphabet(const vector<Instance>& vecInsts) {
 		int curInstSize = labels.size();
 		int labelId;
 		for (int i = 0; i < curInstSize; ++i) {
-			if (is_start_label(labels[i])){
-				labelId = m_seglabelAlphabet.from_string(labels[i].substr(2));
-			}
-			else if (labels[i].length() == 1) {
-				// usually O or o, trick
-				labelId = m_seglabelAlphabet.from_string(labels[i]);
-				ignoreLabels.insert(labels[i]);
-			}
-			labelId = m_labelAlphabet.from_string(labels[i]);
+			labelId = m_driver._modelparams.labelAlpha.from_string(labels[i]);
 
 			string curword = normalize_to_lowerwithdigit(words[i]);
 			m_word_stats[curword]++;
@@ -81,11 +70,8 @@ int Segmentor::createAlphabet(const vector<Instance>& vecInsts) {
 	}
 
 	cout << numInstance << " " << endl;
-	cout << "Label num: " << m_labelAlphabet.size() << endl;
-	cout << "Seg Label num: " << m_seglabelAlphabet.size() << endl;
-	m_labelAlphabet.set_fixed_flag(true);
-	m_seglabelAlphabet.set_fixed_flag(true);
-	ignoreLabels.insert(unknownkey);
+	cout << "Label num: " << m_driver._modelparams.labelAlpha.size() << endl;
+	m_driver._modelparams.labelAlpha.set_fixed_flag(true);
 
 	return 0;
 }
@@ -129,7 +115,6 @@ int Segmentor::addTestAlpha(const vector<Instance>& vecInsts) {
 			break;
 	}
 
-
 	return 0;
 }
 
@@ -167,7 +152,7 @@ void Segmentor::extractFeature(Feature& feat, const Instance* pInstance, int idx
 
 }
 
-void Segmentor::convert2Example(const Instance* pInstance, Example& exam, bool bTrain) {
+void Segmentor::convert2Example(const Instance* pInstance, Example& exam) {
 	exam.clear();
 	const vector<string> &labels = pInstance->labels;
 	int curInstSize = labels.size();
@@ -175,10 +160,10 @@ void Segmentor::convert2Example(const Instance* pInstance, Example& exam, bool b
 	for (int i = 0; i < curInstSize; ++i) {
 		string orcale = labels[i];
 
-		int numLabel = m_labelAlphabet.size();
+		int numLabel = m_driver._modelparams.labelAlpha.size();
 		vector<dtype> curlabels;
 		for (int j = 0; j < numLabel; ++j) {
-			string str = m_labelAlphabet.from_id(j);
+			string str = m_driver._modelparams.labelAlpha.from_id(j);
 			if (str.compare(orcale) == 0)
 				curlabels.push_back(1.0);
 			else
@@ -191,37 +176,14 @@ void Segmentor::convert2Example(const Instance* pInstance, Example& exam, bool b
 		exam.m_features.push_back(feat);
 	}
 
-	resizeVec(exam.m_seglabels, curInstSize, m_options.maxsegLen, m_seglabelAlphabet.size());
-	assignVec(exam.m_seglabels, 0.0);
-	vector<segIndex> segs;
-	getSegs(labels, segs);
-	static int startIndex, disIndex, orcaleId;
-	for (int idx = 0; idx < segs.size(); idx++){
-		orcaleId =  m_seglabelAlphabet.from_string(segs[idx].label);
-		startIndex = segs[idx].start;
-		disIndex = segs[idx].end - segs[idx].start;
-		if (disIndex < m_options.maxsegLen && orcaleId >= 0) { 
-			exam.m_seglabels[startIndex][disIndex][orcaleId] = 1.0;
-			if (maxLabelLength[orcaleId] < disIndex + 1) maxLabelLength[orcaleId] = disIndex + 1;
-		}
-	}
-
-	// O or o
-	for (int i = 0; i < curInstSize; ++i) {
-		if (labels[i].length() == 1){
-			orcaleId = m_seglabelAlphabet.from_string(labels[i]);
-			exam.m_seglabels[i][0][orcaleId] = 1.0;
-			if (maxLabelLength[orcaleId] < 1) maxLabelLength[orcaleId] = 1;
-		}
-	}
 }
 
-void Segmentor::initialExamples(const vector<Instance>& vecInsts, vector<Example>& vecExams, bool bTrain) {
+void Segmentor::initialExamples(const vector<Instance>& vecInsts, vector<Example>& vecExams) {
 	int numInstance;
 	for (numInstance = 0; numInstance < vecInsts.size(); numInstance++) {
 		const Instance *pInstance = &vecInsts[numInstance];
 		Example curExam;
-		convert2Example(pInstance, curExam, bTrain);
+		convert2Example(pInstance, curExam);
 		vecExams.push_back(curExam);
 
 		if ((numInstance + 1) % m_options.verboseIter == 0) {
@@ -270,15 +232,8 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 	}
 
 	vector<Example> trainExamples, devExamples, testExamples;
-	maxLabelLength.resize(m_seglabelAlphabet.size());
-	assignVec(maxLabelLength, 0);
-	initialExamples(trainInsts, trainExamples, true);
-	//print length information
-	std::cout << "Predefined max seg length: " << m_options.maxsegLen << std::endl;
-	for (int j = 0; j < m_seglabelAlphabet.size(); j++){
-		std::cout << "max length of label " << m_seglabelAlphabet.from_id(j) << ": " << maxLabelLength[j] << std::endl;
-	}
-	m_classifier._loss.initial(m_labelAlphabet.size(), 1000);
+
+	initialExamples(trainInsts, trainExamples);
 	initialExamples(devInsts, devExamples);
 	initialExamples(testInsts, testExamples);
 
@@ -290,30 +245,32 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 	}
 
 	m_word_stats[unknownkey] = m_options.wordCutOff + 1;
+	m_driver._modelparams.wordAlpha.initial(m_word_stats, m_options.wordCutOff);
 	if (m_options.wordFile != "") {
-		m_classifier._words.initial(m_word_stats, m_options.wordCutOff, m_options.wordFile, m_options.wordEmbFineTune);
+		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordFile, m_options.wordEmbFineTune);
 	}
 	else{
-		m_classifier._words.initial(m_word_stats, m_options.wordCutOff, m_options.wordEmbSize, 0, m_options.wordEmbFineTune);
+		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordEmbSize, 0, m_options.wordEmbFineTune);
 	}
 
 	int typeNum = m_type_stats.size();
-	m_classifier._types.resize(typeNum);
+	m_driver._modelparams.typeAlphas.resize(typeNum);
+	m_driver._modelparams.types.resize(typeNum);
 	for (int idx = 0; idx < typeNum; idx++){
 		m_type_stats[idx][unknownkey] = 1; // use the s
+		m_driver._modelparams.typeAlphas[idx].initial(m_type_stats[idx], 0);
 		if (m_options.typeFiles.size() > idx && m_options.typeFiles[idx] != "") {
-			m_classifier._types[idx].initial(m_type_stats[idx], 0, m_options.typeFiles[idx], m_options.typeEmbFineTune);
+			m_driver._modelparams.types[idx].initial(&(m_driver._modelparams.typeAlphas[idx]), m_options.typeFiles[idx], m_options.typeEmbFineTune);
 		}
 		else{
-			m_classifier._types[idx].initial(m_type_stats[idx], 0, m_options.typeEmbSize, (idx + 1) * 1000, m_options.typeEmbFineTune);
+			m_driver._modelparams.types[idx].initial(&(m_driver._modelparams.typeAlphas[idx]), m_options.typeEmbSize, (idx + 1) * 1000, m_options.typeEmbFineTune);
 		}
 	}
 
-	// use rnnHiddenSize to replace segHiddensize
-	m_classifier.setDropValue(m_options.dropProb);
-	m_classifier.init(m_options.wordcontext, m_options.charcontext, m_options.hiddenSize, m_options.rnnHiddenSize, m_labelAlphabet.size());
 	
-	m_classifier.setUpdateParameters(m_options.regParameter, m_options.adaAlpha, m_options.adaEps);
+	m_driver._hyperparams.setRequared(m_options);
+	m_driver.initial();
+	
 
 
 	dtype bestDIS = 0;
@@ -349,17 +306,17 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 			}
 
 			int curUpdateIter = iter * batchBlock + updateIter;
-			dtype cost = m_classifier.train(subExamples, curUpdateIter);
+			dtype cost = m_driver.train(subExamples, curUpdateIter);
 
-			eval.overall_label_count += m_classifier._eval.overall_label_count;
-			eval.correct_label_count += m_classifier._eval.correct_label_count;
+			eval.overall_label_count += m_driver._eval.overall_label_count;
+			eval.correct_label_count += m_driver._eval.correct_label_count;
 
 			if ((curUpdateIter + 1) % m_options.verboseIter == 0) {
-				m_classifier.checkgrad(subExamples, curUpdateIter + 1);
+				m_driver.checkgrad(subExamples, curUpdateIter + 1);
 				std::cout << "current: " << updateIter + 1 << ", total block: " << batchBlock << std::endl;
 				std::cout << "Cost = " << cost << ", Tag Correct(%) = " << eval.getAccuracy() << std::endl;
 			}
-			m_classifier.updateModel();
+			m_driver.updateModel();
 
 		}
 
@@ -460,11 +417,11 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 int Segmentor::predict(const vector<Feature>& features, vector<string>& outputs) {
 	//assert(features.size() == words.size());
 	vector<int> labelIdx;
-	m_classifier.predict(features, labelIdx);
+	m_driver.predict(features, labelIdx);
 	int seq_size = features.size();
 	outputs.resize(seq_size);
 	for (int idx = 0; idx < seq_size; idx++) {
-		outputs[idx] = m_labelAlphabet.from_id(labelIdx[idx], unknownkey);
+		outputs[idx] = m_driver._modelparams.labelAlpha.from_id(labelIdx[idx], unknownkey);
 	}
 
 	for (int idx = 0; idx < seq_size; idx++) {
