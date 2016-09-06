@@ -46,13 +46,13 @@ public:
 		opts.labelSize = labelAlpha.size();
 		opts.inputsize = opts.wordwindow * opts.unitsize;
 
-		tanh1_project.initial(opts.hiddensize, opts.inputsize, true, 100);
-		left_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize, 200);
-		right_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize, 300);
-		tanh2_project.initial(opts.hiddensize, opts.rnnhiddensize, opts.rnnhiddensize, true, 400);
-		olayer_linear.initial(opts.labelSize, opts.hiddensize, false, 500);
+		tanh1_project.initial(opts.hiddensize, opts.inputsize, true);
+		left_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize);
+		right_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize);
+		tanh2_project.initial(opts.hiddensize, opts.rnnhiddensize, opts.rnnhiddensize, true);
+		olayer_linear.initial(opts.labelSize, opts.hiddensize, false);
 
-		loss.initial(opts.labelSize, 600);
+		loss.initial(opts.labelSize);
 
 		return true;
 	}

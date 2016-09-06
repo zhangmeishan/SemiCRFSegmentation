@@ -30,9 +30,9 @@ struct SegParams {
 		merge.exportAdaParams(ada);
 	}
 
-	inline void initial(int nOSize, int nHSize, int nISize, int seed = 0) {
-		H.initial(nHSize, nISize, true, seed);
-		merge.initial(nOSize, nHSize, nHSize, nHSize, true, seed + 1);
+	inline void initial(int nOSize, int nHSize, int nISize) {
+		H.initial(nHSize, nISize, true);
+		merge.initial(nOSize, nHSize, nHSize, nHSize, true);
 		inDim = nISize;
 		outDim = nOSize;
 		hiddenDim = nHSize;		

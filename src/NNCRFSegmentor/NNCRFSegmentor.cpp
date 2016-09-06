@@ -11,6 +11,7 @@
 
 Segmentor::Segmentor() {
 	// TODO Auto-generated constructor stub
+	srand(0);
 }
 
 Segmentor::~Segmentor() {
@@ -250,7 +251,7 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordFile, m_options.wordEmbFineTune);
 	}
 	else{
-		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordEmbSize, 0, m_options.wordEmbFineTune);
+		m_driver._modelparams.words.initial(&m_driver._modelparams.wordAlpha, m_options.wordEmbSize, m_options.wordEmbFineTune);
 	}
 
 	int typeNum = m_type_stats.size();
@@ -263,7 +264,7 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 			m_driver._modelparams.types[idx].initial(&(m_driver._modelparams.typeAlphas[idx]), m_options.typeFiles[idx], m_options.typeEmbFineTune);
 		}
 		else{
-			m_driver._modelparams.types[idx].initial(&(m_driver._modelparams.typeAlphas[idx]), m_options.typeEmbSize, (idx + 1) * 1000, m_options.typeEmbFineTune);
+			m_driver._modelparams.types[idx].initial(&(m_driver._modelparams.typeAlphas[idx]), m_options.typeEmbSize, m_options.typeEmbFineTune);
 		}
 	}
 
@@ -479,6 +480,21 @@ int main(int argc, char* argv[]) {
 	std::string outputFile = "";
 	bool bTrain = false;
 	dsr::Argument_helper ah;
+
+	int a1 = 1000000;
+	int a2 = 1000000;
+	int a3 = 10000000;
+
+	blong a = (blong)a1 * (blong)a2 - (blong)a3;
+
+	int b = 1001;
+
+	if (a > b){
+		std::cout << a << std::endl;
+		int c = (-b) % 8;
+		std::cout << c << std::endl;
+	}
+
 
 	ah.new_flag("l", "learn", "train or test", bTrain);
 	ah.new_named_string("train", "trainCorpus", "named_string", "training corpus to train a model, must when training", trainFile);
