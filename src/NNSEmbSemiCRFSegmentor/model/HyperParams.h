@@ -10,6 +10,15 @@ using namespace std;
 
 struct HyperParams{
 public:
+	// numst assign
+	int maxsegLen;
+	dtype dropProb;
+	int wordContext;
+	int hiddenSize1;
+	int rnnHiddenSize;
+	int hiddenSize2;
+	int segHiddenSize;
+	// auto generated
 	int wordWindow;
 	int wordDim;
 	int segDim;
@@ -20,13 +29,7 @@ public:
 	int inputSize;
 	int segLabelSize;
 
-	int maxsegLen;
-	dtype dropProb;
-	int wordContext;
-	int hiddenSize1;
-	int rnnHiddenSize;
-	int hiddenSize2;
-	int segHiddenSize;
+	// for optimization
 	dtype nnRegular, adaAlpha, adaEps;
 
 public:

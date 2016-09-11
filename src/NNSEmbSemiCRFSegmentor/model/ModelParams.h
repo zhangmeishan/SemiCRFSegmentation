@@ -31,7 +31,7 @@ public://follow parameters should be initialized outside
 
 public:
 	bool initial(HyperParams& hyper_params){
-		if (_words.nVSize <= 0 || _label_alpha.size() < 0 )
+		if (_words.nVSize <= 0 || _label_alpha.size() < 0 || _segs.nVSize < 0)
 			return false;
 		hyper_params.wordWindow = hyper_params.wordContext * 2 + 1;
 		hyper_params.wordDim = _words.nDim;
