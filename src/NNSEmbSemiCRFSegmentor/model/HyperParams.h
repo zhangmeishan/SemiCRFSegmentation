@@ -12,20 +12,21 @@ struct HyperParams{
 public:
 	int wordWindow;
 	int wordDim;
+	int segDim;
 	vector<int> typeDims;
 	vector<int> maxLabelLength;
 	int unitSize;
+	int labelSize;
+	int inputSize;
 	int segLabelSize;
 
+	int maxsegLen;
 	dtype dropProb;
 	int wordContext;
 	int hiddenSize1;
 	int rnnHiddenSize;
 	int hiddenSize2;
 	int segHiddenSize;
-	int inputSize;
-	int maxsegLen;
-	int labelSize;
 	dtype nnRegular, adaAlpha, adaEps;
 
 public:

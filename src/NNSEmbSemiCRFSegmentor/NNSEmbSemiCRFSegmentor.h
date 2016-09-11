@@ -10,7 +10,7 @@
 
 
 #include "N3L.h"
-#include "NNSEmbSemiCRF.h"
+#include "Driver.h"
 #include "Options.h"
 #include "Instance.h"
 #include "Example.h"
@@ -26,9 +26,6 @@ class Segmentor {
 
 
 public:
-	Alphabet m_labelAlphabet;
-	Alphabet m_seglabelAlphabet;
-	vector<int> maxLabelLength;
 	hash_set<string> ignoreLabels;
 	hash_map<string, int> m_feat_stats;
 	hash_map<string, int> m_word_stats;
@@ -38,10 +35,8 @@ public:
 
 public:
 	Options m_options;
-
+	Driver m_driver;
 	Pipe m_pipe;
-
-	NNSEmbSemiCRF m_classifier;
 
 
 public:
