@@ -103,7 +103,7 @@ public:
 	}
 
 	inline dtype cost(const Example& example){
-		_pcg->forward(example.m_features, true); //forward here
+		_pcg->forward(example.m_features); //forward here
 
 		int seq_size = example.m_features.size();
 

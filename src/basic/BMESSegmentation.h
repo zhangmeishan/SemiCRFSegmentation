@@ -53,7 +53,7 @@ struct SegParams {
 		inDim = nISize;
 		outDim = nOSize;
 		hiddenDim = nHSize;	
-		hash_map<string, int> length_stat;
+		unordered_map<string, int> length_stat;
 
 		for (int idx = 1; idx <= maxLength; idx++){
 			length_stat[obj2string(idx)] = 1;
@@ -134,7 +134,7 @@ public:
 
 public:
 
-	inline void forward(Graph *cg, const vector<PNode>& x, bool bTrain){
+	inline void forward(Graph *cg, const vector<PNode>& x){
 		if (x.size() == 0){
 			std::cout << "empty inputs for seg operation" << std::endl;
 			return;
@@ -159,7 +159,7 @@ public:
 
 		for (int idx = 0; idx < _nSize; idx++){
 			_tnodes[idx].forward(cg, x[idx]);
-			_tnodes_drop[idx].forward(cg, &_tnodes[idx], bTrain);
+			_tnodes_drop[idx].forward(cg, &_tnodes[idx]);
 		}
 
 		_sum.forward(cg, getPNodes(_tnodes_drop, _nSize));
@@ -167,10 +167,10 @@ public:
 		_min.forward(cg, getPNodes(_tnodes_drop, _nSize));
 
 		_length.forward(cg, obj2string(_nSize < _param->maxLength ? _nSize : _param->maxLength));
-		_length_drop.forward(cg, &_length, bTrain);
+		_length_drop.forward(cg, &_length);
 
 		_output.forward(cg, &_sum, &_max, &_min, &_length_drop);
-		_output_drop.forward(cg, &_output, bTrain);
+		_output_drop.forward(cg, &_output);
 	}
 
 };

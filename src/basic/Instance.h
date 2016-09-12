@@ -95,7 +95,7 @@ public:
 
   void SegEvaluate(const vector<string>& resulted_labels, Metric& eval) const {
     static int idx, idy, endpos;
-    hash_set<string> golds;
+    unordered_set<string> golds;
     // segmentation should be agree in both layers, usually, the first layer defines segmentation
     idx = 0;
     while (idx < labels.size()) {
@@ -118,7 +118,7 @@ public:
       idx++;
     }
 
-    hash_set<string> preds;
+    unordered_set<string> preds;
     idx = 0;
     while (idx < resulted_labels.size()) {
       if (is_start_label(resulted_labels[idx])) {
@@ -140,7 +140,7 @@ public:
       idx++;
     }
 
-    hash_set<string>::iterator iter;
+    unordered_set<string>::iterator iter;
     eval.overall_label_count += golds.size();
     eval.predicated_label_count += preds.size();
     for (iter = preds.begin(); iter != preds.end(); iter++) {

@@ -26,12 +26,12 @@ class Segmentor {
 
 
 public:
-	hash_set<string> ignoreLabels;
-	hash_map<string, int> m_feat_stats;
-	hash_map<string, int> m_word_stats;
-	hash_map<string, int> m_char_stats;
-	vector<hash_map<string, int> > m_type_stats;
-	hash_map<string, int> m_seg_stats; // read it by file
+	unordered_set<string> ignoreLabels;
+	unordered_map<string, int> m_feat_stats;
+	unordered_map<string, int> m_word_stats;
+	unordered_map<string, int> m_char_stats;
+	vector<unordered_map<string, int> > m_type_stats;
+	unordered_map<string, int> m_seg_stats; // read it by file
 
 public:
 	Options m_options;
@@ -53,8 +53,8 @@ public:
 	void extractLinearFeatures(vector<string>& features, const Instance* pInstance, int idx);
 	void extractFeature(Feature& feat, const Instance* pInstance, int idx);
 
-	void convert2Example(const Instance* pInstance, Example& exam, bool bTrain = false);
-	void initialExamples(const vector<Instance>& vecInsts, vector<Example>& vecExams, bool bTrain = false);
+	void convert2Example(const Instance* pInstance, Example& exam);
+	void initialExamples(const vector<Instance>& vecInsts, vector<Example>& vecExams);
 
 public:
 	void train(const string& trainFile, const string& devFile, const string& testFile, const string& modelFile, const string& optionFile);

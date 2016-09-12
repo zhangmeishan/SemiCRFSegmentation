@@ -133,7 +133,7 @@ public:
 public:
 	// some nodes may behave different during training and decode, for example, dropout
 	inline void forward(const vector<Feature>& features, bool bTrain = false){
-		clearValue(); // compute is a must step for train, predict and cost computation
+		clearValue(bTrain); // compute is a must step for train, predict and cost computation
 		int seq_size = features.size();
 
 		//forward
@@ -144,12 +144,12 @@ public:
 			word_inputs[idx][0].forward(this, feature.words[0]);
 
 			//drop out
-			word_inputs_drop[idx][0].forward(this, &word_inputs[idx][0], bTrain);
+			word_inputs_drop[idx][0].forward(this, &word_inputs[idx][0]);
 
 			for (int idy = 1; idy < word_inputs[idx].size(); idy++){
 				word_inputs[idx][idy].forward(this, feature.types[idy - 1]);
 				//drop out
-				word_inputs_drop[idx][idy].forward(this, &word_inputs[idx][idy], bTrain);
+				word_inputs_drop[idx][idy].forward(this, &word_inputs[idx][idy]);
 			}
 
 			token_repsents[idx].forward(this, getPNodes(word_inputs_drop[idx], word_inputs_drop[idx].size()));
@@ -162,17 +162,17 @@ public:
 			//feed-forward
 			word_hidden1[idx].forward(this, &(word_window._outputs[idx]));
 
-			word_hidden1_drop[idx].forward(this, &word_hidden1[idx], bTrain);
+			word_hidden1_drop[idx].forward(this, &word_hidden1[idx]);
 		}
 
-		left_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size), bTrain);
-		right_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size), bTrain);
+		left_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size));
+		right_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size));
 
 		for (int idx = 0; idx < seq_size; idx++) {
 			//feed-forward
 			word_hidden2[idx].forward(this, &(left_lstm._hiddens_drop[idx]), &(right_lstm._hiddens_drop[idx]));
 
-			word_hidden2_drop[idx].forward(this, &word_hidden2[idx], bTrain);
+			word_hidden2_drop[idx].forward(this, &word_hidden2[idx]);
 		}
 
 		static int offset;
@@ -183,13 +183,13 @@ public:
 			segnodes.clear();
 			for (int dist = 0; idx + dist < seq_size && dist < max_seg_length; dist++) {
 				segnodes.push_back(&word_hidden2_drop[idx + dist]);
-				outputseg[offset + dist].forward(this, segnodes, bTrain);
+				outputseg[offset + dist].forward(this, segnodes);
 
 				seg_inputs[offset + dist].forward(this, feature.segs[dist]);
-				seg_inputs_drop[offset + dist].forward(this, &seg_inputs[offset + dist], bTrain);
+				seg_inputs_drop[offset + dist].forward(this, &seg_inputs[offset + dist]);
 
 				seg_hidden1[offset + dist].forward(this, &(outputseg[offset + dist]._output_drop), &seg_inputs_drop[offset + dist]);
-				seg_hidden1_drop[offset + dist].forward(this, &seg_hidden1[offset + dist], bTrain);
+				seg_hidden1_drop[offset + dist].forward(this, &seg_hidden1[offset + dist]);
 			}
 		}
 
