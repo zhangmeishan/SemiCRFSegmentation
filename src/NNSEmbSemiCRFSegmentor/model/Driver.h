@@ -33,11 +33,11 @@ public:
 public:
 	//embeddings are initialized before this separately.
 	inline void initial(){
-		if(!_hyper_params.bVaild()){
+		if (!_hyper_params.bVaild()){
 			std::cout << "hyper parameter initialization Error, please check!" << std::endl;
 			return;
 		}
-		if(!_model_params.initial(_hyper_params)) {
+		if (!_model_params.initial(_hyper_params)) {
 			std::cout << "model parameter initialzation Errror, please check!" << std::endl;
 			return;
 		}
@@ -47,8 +47,8 @@ public:
 		_hyper_params.print();
 
 		_pcg = new ComputionGraph();
-		_pcg -> createNodes(ComputionGraph::max_sentence_length, _hyper_params.maxsegLen, _model_params._types.size());
-		_pcg -> initial(_model_params, _hyper_params);
+		_pcg->createNodes(ComputionGraph::max_sentence_length, _hyper_params.maxsegLen, _model_params._types.size());
+		_pcg->initial(_model_params, _hyper_params);
 
 		setUpdateParameters(_hyper_params.nnRegular, _hyper_params.adaAlpha, _hyper_params.adaEps);
 	}
@@ -65,12 +65,12 @@ public:
 			const Example& example = examples[count];
 
 			//forward
-			_pcg->forward(example.m_features, true); 
+			_pcg->forward(example.m_features, true);
 
 			//loss function
 			int seq_size = example.m_features.size();
 			//for (int idx = 0; idx < seq_size; idx++) {
-				//cost += _loss.loss(&(_pcg->output[idx]), example.m_labels[idx], _eval, example_num);				
+			//cost += _loss.loss(&(_pcg->output[idx]), example.m_labels[idx], _eval, example_num);				
 			//}
 			cost += _model_params._loss.loss(_pcg->poutput, example.m_seglabels, _eval, example_num);
 

@@ -11,29 +11,34 @@ using namespace std;
 struct HyperParams{
 public:
 	// must assign
-	dtype dropProb;
 	int wordContext;
 	int hiddenSize1;
-	int rnnHiddenSize;
 	int hiddenSize2;
+	int rnnHiddenSize;
 	int segHiddenSize;
-	int inputSize;
 	int maxsegLen;
-	int labelSize;
-	// auto generated
+	dtype dropProb;
+
+	//auto generated
 	int wordWindow;
 	int wordDim;
 	vector<int> typeDims;
 	vector<int> maxLabelLength;
 	int unitSize;
+	int inputSize;
+	int labelSize;
 	int segLabelSize;
-	
+
+
 	// for optimization
 	dtype nnRegular, adaAlpha, adaEps;
-
 public:
 	HyperParams(){
 		bAssigned = false;
+	}
+
+	bool bVaild(){
+		return bAssigned;
 	}
 
 	void setRequared(Options& opt){
@@ -44,7 +49,6 @@ public:
 		segHiddenSize = opt.segHiddenSize;
 		maxsegLen = opt.maxsegLen;
 		dropProb = opt.dropProb;
-
 		nnRegular = opt.regParameter;
 		adaAlpha = opt.adaAlpha;
 		adaEps = opt.adaEps;
@@ -52,19 +56,12 @@ public:
 		bAssigned = true;
 	}
 
-	void clear() {
+	void clear(){
 		bAssigned = false;
 	}
-
-	bool bVaild(){
-		return bAssigned;
-	}
-
-	void print(){
-
-	}
+	void print(){}
 private:
 	bool bAssigned;
 };
 
-#endif /* SRC_HyperParams_H_*/
+#endif /*SRC_HyperParams_H_*/

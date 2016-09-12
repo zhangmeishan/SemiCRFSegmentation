@@ -5,8 +5,8 @@
  *      Author: mason
  */
 
-#ifndef BMESSEGBuilder_H_
-#define BMESSEGBuilder_H_
+#ifndef _BMESSEGBuilder_H_
+#define _BMESSEGBuilder_H_
 
 #include "Param.h"
 #include "MyLib.h"
@@ -22,6 +22,8 @@ struct SegParams {
 	UniParams S;
 	FourParams merge;
 	LookupTable lengths;
+
+	Alphabet length_alpha; // for lengths initial.
 	int inDim;
 	int outDim;
 	int hiddenDim;
@@ -43,19 +45,21 @@ struct SegParams {
 	}
 
 	inline void initial(int nOSize, int nHSize, int nISize, int seed = 0) {
-		B.initial(nHSize, nISize, true, seed);
-		M.initial(nHSize, nISize, true, seed + 1);
-		E.initial(nHSize, nISize, true, seed + 2);
-		S.initial(nHSize, nISize, true, seed + 3);
-		merge.initial(nOSize, nHSize, nHSize, nHSize, lengthDim, true, seed + 4);
+		B.initial(nHSize, nISize, true);
+		M.initial(nHSize, nISize, true);
+		E.initial(nHSize, nISize, true);
+		S.initial(nHSize, nISize, true);
+		merge.initial(nOSize, nHSize, nHSize, nHSize, lengthDim, true);
 		inDim = nISize;
 		outDim = nOSize;
 		hiddenDim = nHSize;	
 		hash_map<string, int> length_stat;
+
 		for (int idx = 1; idx <= maxLength; idx++){
 			length_stat[obj2string(idx)] = 1;
 		}
-		lengths.initial(length_stat, 0, lengthDim, seed + 5, true);
+		length_alpha.initial(length_stat);
+		lengths.initial(&length_alpha, lengthDim, true);
 	}
 };
 

@@ -14,7 +14,6 @@ else()
     SET( CMAKE_CXX_FLAGS  "-w -msse3 -funroll-loops -O3" )
 endif()
 
-find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${N3L_INCLUDE_DIR})
 
