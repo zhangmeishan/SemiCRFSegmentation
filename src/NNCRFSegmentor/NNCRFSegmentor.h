@@ -24,10 +24,10 @@ class Segmentor {
 
 
 public:
-	hash_map<string, int> m_feat_stats;
-	hash_map<string, int> m_word_stats;
-	hash_map<string, int> m_char_stats;
-	vector<hash_map<string, int> > m_type_stats;
+	unordered_map<string, int> m_feat_stats;
+	unordered_map<string, int> m_word_stats;
+	unordered_map<string, int> m_char_stats;
+	vector<unordered_map<string, int> > m_type_stats;
 
 public:
 	Options m_options;

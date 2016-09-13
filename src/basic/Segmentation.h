@@ -105,7 +105,7 @@ public:
 
 public:
 
-	inline void forward(Graph *cg, const vector<PNode>& x, bool bTrain){
+	inline void forward(Graph *cg, const vector<PNode>& x){
 		if (x.size() == 0){
 			std::cout << "empty inputs for seg operation" << std::endl;
 			return;
@@ -119,14 +119,14 @@ public:
 
 		for (int idx = 0; idx < _nSize; idx++){
 			_tnodes[idx].forward(cg, x[idx]);
-			_tnodes_drop[idx].forward(cg, &_tnodes[idx], bTrain);
+			_tnodes_drop[idx].forward(cg, &_tnodes[idx]);
 		}
 
 		_sum.forward(cg, getPNodes(_tnodes_drop, _nSize));
 		_max.forward(cg, getPNodes(_tnodes_drop, _nSize));
 		_min.forward(cg, getPNodes(_tnodes_drop, _nSize));
 		_output.forward(cg, &_sum, &_max, &_min);
-		_output_drop.forward(cg, &_output, bTrain);
+		_output_drop.forward(cg, &_output);
 	}
 
 };
