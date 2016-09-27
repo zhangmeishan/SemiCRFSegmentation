@@ -186,15 +186,6 @@ public:
 				poutput[idx][dist] = &output[offset + dist];
 			}
 		}
-
-		for (int idx = 0; idx < seq_size; idx++) {
-			for (int dist = 0; dist < max_seg_length; dist++) {
-				if (poutput[idx][dist] != NULL){
-					exportNode(poutput[idx][dist]);
-				}
-			}
-			exportNode(&output_bmes[idx]);
-		}
 	}
 
 };

@@ -192,6 +192,7 @@ public:
 			for (int dist = 0; idx + dist < seq_size && dist < max_seg_length; dist++) {
 				segnodes.push_back(&word_hidden2_drop[idx + dist]);
 				outputseg[offset + dist].forward(this, segnodes);
+
 				seg_inputs[offset + dist].forward(this, feature.segs[dist]);
 				seg_inputs_drop[offset + dist].forward(this, &seg_inputs[offset + dist]);
 
@@ -210,16 +211,6 @@ public:
 				poutput[idx][dist] = &output[offset + dist];
 			}
 		}
-		
-		for (int idx = 0; idx < seq_size; idx++) {
-			for (int dist = 0; dist < max_seg_length; dist++) {
-				if (poutput[idx][dist] != NULL){
-					exportNode(poutput[idx][dist]);
-				}
-			}
-			exportNode(&output_bmes[idx]);
-		}
-
 	}
 
 };
