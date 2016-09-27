@@ -152,12 +152,6 @@ public:
 
 			output[idx].forward(this, &(word_hidden2_drop[idx]));
 		}
-
-		//third step: export out nodes, upon which the loss are defined.
-		for (int idx = 0; idx < seq_size; idx++){
-			exportNode(&output[idx]);
-		}
-
 	}
 
 };
