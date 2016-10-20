@@ -1,0 +1,7 @@
+
+outBest = .debug
+maxInstance = 10
+verboseIter = 10
+seg = true
+dropProb = 0.0
+segFile = E:\segpos1\weibo.noface.pku.addUNKWord.50d.vect
