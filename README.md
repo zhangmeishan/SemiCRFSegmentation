@@ -1,4 +1,4 @@
-###HOW TO COMPILE THIS PROJECT IN WINDOWS </br>
+##HOW TO COMPILE THIS PROJECT IN WINDOWS:</br>
 * Step 0: Open cmd, and change directory to project directory. Use this command </br> `cd /your/project/path/SemiCRFSegmentation`. </br>
 * Step 1: Create a new directory in SemiCRFSegmentation.For example, use this command `mkdir build` </br>
 * Step 2: Change your directory. Use this command `cd build`. </br>
