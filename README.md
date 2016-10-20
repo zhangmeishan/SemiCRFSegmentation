@@ -8,8 +8,9 @@
 * Step 6: If you want to run this project.Please open project properties and add this argument. </br>
 `-train /your/training/corpus -dev /your/development/corpus -test /your/test/corpus -option /your/option/file -l` </br>
 
-NOTE: Make sure you have eigen ,LibN3L-2.0, cmake and visual studio 2013 version (or newer). </br>
-Eigen:http://eigen.tuxfamily.org/index.php?title=Main_Page </br>
-LibN3L-2.0:https://github.com/zhangmeishan/LibN3L-2.0 </br>
-cmake:https://cmake.org/</br>
-Visual Studio 2013: https://www.visualstudio.com/zh-hans/downloads/
+##NOTE:</br> 
+Make sure you have eigen ,LibN3L-2.0, cmake and visual studio 2013 version (or newer). </br>
+* Eigen:http://eigen.tuxfamily.org/index.php?title=Main_Page </br>
+* LibN3L-2.0:https://github.com/zhangmeishan/LibN3L-2.0 </br>
+* cmake:https://cmake.org/</br>
+* Visual Studio 2013: https://www.visualstudio.com/zh-hans/downloads/
