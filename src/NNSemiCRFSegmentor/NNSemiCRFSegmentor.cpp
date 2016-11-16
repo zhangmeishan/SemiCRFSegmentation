@@ -9,7 +9,7 @@
 
 #include "Argument_helper.h"
 
-Segmentor::Segmentor() {
+Segmentor::Segmentor(int memsize) :m_driver(memsize) {
 	// TODO Auto-generated constructor stub
 }
 
@@ -342,11 +342,13 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 	static Metric eval, metric_dev, metric_test;
 	static vector<Example> subExamples;
 	int devNum = devExamples.size(), testNum = testExamples.size();
+	int start_time, end_time;
 	for (int iter = 0; iter < m_options.maxIter; ++iter) {
 		std::cout << "##### Iteration " << iter << std::endl;
 
 		random_shuffle(indexes.begin(), indexes.end());
 		eval.reset();
+		start_time = clock();
 		for (int updateIter = 0; updateIter < batchBlock; updateIter++) {
 			subExamples.clear();
 			int start_pos = updateIter * m_options.batchSize;
@@ -365,13 +367,15 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 			eval.correct_label_count += m_driver._eval.correct_label_count;
 
 			if ((curUpdateIter + 1) % m_options.verboseIter == 0) {
-				//m_driver.checkgrad(subExamples, curUpdateIter + 1);
+				m_driver.checkgrad(subExamples, curUpdateIter + 1);
 				std::cout << "current: " << updateIter + 1 << ", total block: " << batchBlock << std::endl;
 				std::cout << "Cost = " << cost << ", Tag Correct(%) = " << eval.getAccuracy() << std::endl;
 			}
 			m_driver.updateModel();
 
 		}
+		end_time = clock();
+		std::cout << "speed time: " << end_time - start_time << endl;
 
 		if (devNum > 0) {
 			bCurIterBetter = false;
@@ -560,7 +564,7 @@ int main(int argc, char* argv[]) {
 	std::string outputFile = "";
 	bool bTrain = false;
 	dsr::Argument_helper ah;
-
+	int memsize = 0;
 	ah.new_flag("l", "learn", "train or test", bTrain);
 	ah.new_named_string("train", "trainCorpus", "named_string", "training corpus to train a model, must when training", trainFile);
 	ah.new_named_string("dev", "devCorpus", "named_string", "development corpus to train a model, optional when training", devFile);
@@ -572,7 +576,9 @@ int main(int argc, char* argv[]) {
 
 	ah.process(argc, argv);
 
-	Segmentor segmentor;
+	if (memsize < 0)  
+		memsize = 0;
+	Segmentor segmentor(memsize);
 	segmentor.m_pipe.max_sentense_size = ComputionGraph::max_sentence_length;
 	if (bTrain) {
 		segmentor.train(trainFile, devFile, testFile, modelFile, optionFile);

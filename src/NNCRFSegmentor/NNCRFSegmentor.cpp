@@ -9,7 +9,7 @@
 
 #include "Argument_helper.h"
 
-Segmentor::Segmentor() {
+Segmentor::Segmentor(size_t memsize) : m_driver(memsize){
 	// TODO Auto-generated constructor stub
 	srand(0);
 }
@@ -313,7 +313,7 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 			eval.correct_label_count += m_driver._eval.correct_label_count;
 
 			if ((curUpdateIter + 1) % m_options.verboseIter == 0) {
-				//m_driver.checkgrad(subExamples, curUpdateIter + 1);
+				m_driver.checkgrad(subExamples, curUpdateIter + 1);
 				std::cout << "current: " << updateIter + 1 << ", total block: " << batchBlock << std::endl;
 				std::cout << "Cost = " << cost << ", Tag Correct(%) = " << eval.getAccuracy() << std::endl;
 			}
@@ -480,20 +480,7 @@ int main(int argc, char* argv[]) {
 	std::string outputFile = "";
 	bool bTrain = false;
 	dsr::Argument_helper ah;
-
-	int a1 = 1000000;
-	int a2 = 1000000;
-	int a3 = 10000000;
-
-	blong a = (blong)a1 * (blong)a2 - (blong)a3;
-
-	int b = 1001;
-
-	if (a > b){
-		std::cout << a << std::endl;
-		int c = (-b) % 8;
-		std::cout << c << std::endl;
-	}
+	size_t memsize = 0;
 
 
 	ah.new_flag("l", "learn", "train or test", bTrain);
@@ -507,7 +494,7 @@ int main(int argc, char* argv[]) {
 
 	ah.process(argc, argv);
 
-	Segmentor segmentor;
+	Segmentor segmentor(memsize);
 	segmentor.m_pipe.max_sentense_size = ComputionGraph::max_sentence_length;
 	if (bTrain) {
 		segmentor.train(trainFile, devFile, testFile, modelFile, optionFile);

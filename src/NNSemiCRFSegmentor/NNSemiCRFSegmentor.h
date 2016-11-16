@@ -45,7 +45,7 @@ public:
 
 
 public:
-	Segmentor();
+	Segmentor(int memsize);
 	virtual ~Segmentor();
 
 public:

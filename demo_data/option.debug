@@ -4,4 +4,5 @@ maxInstance = 10
 verboseIter = 10
 seg = true
 dropProb = 0.0
-segFile = E:\segpos1\weibo.noface.pku.addUNKWord.50d.vect
+segFile = E:\vs_workspace\normal2.1\SemiCRFSegmentation\demo_data\weibo.noface.pku.addUNKWord.50d.vect
+

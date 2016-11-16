@@ -21,14 +21,11 @@ public:
 	LSTM1Builder right_lstm;
 
 	vector<BiNode> word_hidden2;
+	vector<UniNode> word_hidden3;
 	vector<LinearNode> output;
 
 	int type_num;
 
-	//dropout nodes
-	vector<vector<DropNode> > word_inputs_drop;
-	vector<DropNode> word_hidden1_drop;
-	vector<DropNode> word_hidden2_drop;
 
 	// node pointers
 public:
@@ -50,11 +47,9 @@ public:
 		left_lstm.resize(sent_length);
 		right_lstm.resize(sent_length);
 		word_hidden2.resize(sent_length);
+		word_hidden3.resize(sent_length);
 		output.resize(sent_length);
 
-		resizeVec(word_inputs_drop, sent_length, type_num + 1);
-		word_hidden1_drop.resize(sent_length);
-		word_hidden2_drop.resize(sent_length);
 	}
 
 	inline void clear(){
@@ -66,39 +61,38 @@ public:
 		left_lstm.clear();
 		right_lstm.clear();
 		word_hidden2.clear();
+		word_hidden3.clear();
 		output.clear();
-
-		clearVec(word_inputs_drop);
-		word_hidden1_drop.clear();
-		word_hidden2_drop.clear();
 	}
 
 public:
-	inline void initial(ModelParams& model, HyperParams& opts){
-		for (int idx = 0; idx < word_inputs.size(); idx++) {
+	inline void initial(ModelParams& model, HyperParams& opts, AlignedMemoryPool* mem){
+		int maxsize = word_inputs.size();
+		for (int idx = 0; idx < maxsize; idx++) {
 			word_inputs[idx][0].setParam(&model.words);
 			for (int idy = 1; idy < word_inputs[idx].size(); idy++){
 				word_inputs[idx][idy].setParam(&model.types[idy - 1]);
 			}
-
-			for (int idy = 0; idy < word_inputs[idx].size(); idy++){
-				word_inputs_drop[idx][idy].setDropValue(opts.dropOut);
-			}
-
 			word_hidden1[idx].setParam(&model.tanh1_project);
-			word_hidden1[idx].setFunctions(&tanh, &tanh_deri);
-			word_hidden1_drop[idx].setDropValue(opts.dropOut);
-
 			word_hidden2[idx].setParam(&model.tanh2_project);
-			word_hidden2[idx].setFunctions(&tanh, &tanh_deri);
-			word_hidden2_drop[idx].setDropValue(opts.dropOut);
-		}
-		word_window.setContext(opts.wordcontext);
-		left_lstm.setParam(&model.left_lstm_project, opts.dropOut, true);
-		right_lstm.setParam(&model.right_lstm_project, opts.dropOut, false);
-
-		for (int idx = 0; idx < output.size(); idx++){
+			word_hidden3[idx].setParam(&model.tanh3_project);
 			output[idx].setParam(&model.olayer_linear);
+		}
+		
+		word_window.init(opts.unitsize, opts.wordcontext, mem);
+		left_lstm.init(&model.left_lstm_project, opts.dropOut, true, mem);
+		right_lstm.init(&model.right_lstm_project, opts.dropOut, false, mem);
+
+		for (int idx = 0; idx < maxsize; idx++){
+			word_inputs[idx][0].init(opts.wordDim, opts.dropOut, mem);
+			for (int idy = 1; idy < word_inputs[idx].size(); idy++){
+				word_inputs[idx][idy].init(opts.typeDims[idy-1], opts.dropOut, mem);
+			}
+			token_repsents[idx].init(opts.unitsize, -1, mem);
+			word_hidden1[idx].init(opts.hiddensize, opts.dropOut, mem);
+			word_hidden2[idx].init(opts.hiddensize, opts.dropOut, mem);
+			word_hidden3[idx].init(opts.hiddensize, -1, mem);
+			output[idx].init(opts.labelSize, -1, mem);
 		}
 	}
 
@@ -118,17 +112,11 @@ public:
 			const Feature& feature = features[idx];
 			//input
 			word_inputs[idx][0].forward(this, feature.words[0]);
-
-			//drop out
-			word_inputs_drop[idx][0].forward(this, &word_inputs[idx][0]);
-
 			for (int idy = 1; idy < word_inputs[idx].size(); idy++){
 				word_inputs[idx][idy].forward(this, feature.types[idy - 1]);
-				//drop out
-				word_inputs_drop[idx][idy].forward(this, &word_inputs[idx][idy]);
 			}
 
-			token_repsents[idx].forward(this, getPNodes(word_inputs_drop[idx], word_inputs_drop[idx].size()));
+			token_repsents[idx].forward(this, getPNodes(word_inputs[idx], word_inputs[idx].size()));
 		}
 
 		//windowlized
@@ -137,20 +125,16 @@ public:
 		for (int idx = 0; idx < seq_size; idx++) {
 			//feed-forward
 			word_hidden1[idx].forward(this, &(word_window._outputs[idx]));
-
-			word_hidden1_drop[idx].forward(this, &word_hidden1[idx]);
 		}
 
-		left_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size));
-		right_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size));
+		left_lstm.forward(this, getPNodes(word_hidden1, seq_size));
+		right_lstm.forward(this, getPNodes(word_hidden1, seq_size));
 
 		for (int idx = 0; idx < seq_size; idx++) {
 			//feed-forward
-			word_hidden2[idx].forward(this, &(left_lstm._hiddens_drop[idx]), &(right_lstm._hiddens_drop[idx]));
-
-			word_hidden2_drop[idx].forward(this, &word_hidden2[idx]);
-
-			output[idx].forward(this, &(word_hidden2_drop[idx]));
+			word_hidden2[idx].forward(this, &(left_lstm._hiddens[idx]), &(right_lstm._hiddens[idx]));
+			word_hidden3[idx].forward(this, &(word_hidden2[idx]));
+			output[idx].forward(this, &(word_hidden3[idx]));
 		}
 	}
 
