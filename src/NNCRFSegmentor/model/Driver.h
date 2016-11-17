@@ -16,7 +16,7 @@
 
 class Driver{
 public:
-  Driver(size_t memsize) : aligned_mem(memsize){
+  Driver(int memsize) : aligned_mem(memsize){
 	  _pcg = NULL;
   }
 

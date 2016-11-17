@@ -614,9 +614,9 @@ int main(int argc, char* argv[]) {
 	std::string trainFile = "", devFile = "", testFile = "", modelFile = "", optionFile = "";
 	std::string outputFile = "";
 	bool bTrain = false;
+	int memsize = 0;
 	dsr::Argument_helper ah;
 
-	int memsize = 0;
 	ah.new_flag("l", "learn", "train or test", bTrain);
 	ah.new_named_string("train", "trainCorpus", "named_string", "training corpus to train a model, must when training", trainFile);
 	ah.new_named_string("dev", "devCorpus", "named_string", "development corpus to train a model, optional when training", devFile);
@@ -625,9 +625,12 @@ int main(int argc, char* argv[]) {
 	ah.new_named_string("model", "modelFile", "named_string", "model file, must when training and testing", modelFile);
 	ah.new_named_string("option", "optionFile", "named_string", "option file to train a model, optional when training", optionFile);
 	ah.new_named_string("output", "outputFile", "named_string", "output file to test, must when testing", outputFile);
+	ah.new_named_int("memsize", "memorySize", "named_int", "This argument decides the size of static memory allocation", memsize);
 
 	ah.process(argc, argv);
 
+	if (memsize < 0)
+		memsize = 0;
 	Segmentor segmentor(memsize);
 	segmentor.m_pipe.max_sentense_size = ComputionGraph::max_sentence_length;
 	if (bTrain) {

@@ -1,325 +1,325 @@
-中 b-NR
-国 e-NR
-最 b-NN
-大 m-NN
-氨 e-NN
-纶 b-NN
-丝 m-NN
-生 e-NN
-产 b-NN
-基 m-NN
-地 e-NN
-在 b-NR
-连 m-NR
-云 e-NR
-港 b-NN
-建 m-NN
-成 e-NN
+中 b-NR b-NR
+国 e-NR e-NR
+最 b-JJ s-PU
+大 b-NN s-PU
+氨 b-NN b-NN
+纶 m-NN m-NN
+丝 e-NN e-NN
+生 b-NN b-NN
+产 e-NN e-NN
+基 b-NN b-NN
+地 e-NN e-NN
+在 e-NN s-PU
+连 b-NR b-NR
+云 b-NR m-NR
+港 e-NR e-NR
+建 b-VV b-VV
+成 e-VV e-VV
 
-新 b-NN
-华 m-NN
-社 e-NN
-南 b-NR
-京 e-NR
-十 b-NN
-二 m-NN
-月 e-NN
-四 b-NN
-日 e-NN
-电 s-PU
+新 b-NN b-NN
+华 m-NN m-NN
+社 e-NN e-NN
+南 b-NR b-NR
+京 e-NR e-NR
+十 b-NT b-NT
+二 b-NT m-NT
+月 e-NT e-NT
+四 b-NT b-NT
+日 e-NT e-NT
+电 e-VV s-PU
 
-中 b-NR
-国 e-NR
-最 b-NN
-大 m-NN
-的 e-NN
-氨 b-NN
-伦 m-NN
-丝 e-NN
-生 b-NN
-产 m-NN
-基 e-NN
-地 b-NR
-－ m-NR
-－ e-NR
-钟 b-NR
-山 e-NR
-氨 b-NN
-伦 m-NN
-有 e-NN
-限 b-NN
-公 m-NN
-司 e-NN
-， b-NN
-日 m-NN
-前 e-NN
-在 s-P
-连 b-NR
-云 m-NR
-港 e-NR
-开 b-NN
-发 m-NN
-区 e-NN
-建 b-NN
-成 m-NN
-并 e-NN
-投 b-NN
-产 m-NN
-。 e-NN
+中 b-NR b-NR
+国 e-NR e-NR
+最 b-JJ b-NR
+大 b-JJ e-NR
+的 b-NN s-PU
+氨 b-NN b-NN
+伦 m-NN m-NN
+丝 e-NN e-NN
+生 b-NN b-NN
+产 e-NN e-NN
+基 b-NN b-NN
+地 e-NN e-NN
+－ e-NN s-PU
+－ b-NR s-PU
+钟 b-NR b-NR
+山 e-NR e-NR
+氨 b-NN b-NN
+伦 e-NN m-NN
+有 e-NN e-NN
+限 e-NN s-PU
+公 b-NN b-NN
+司 e-NN e-NN
+， s-PU s-PU
+日 b-NT s-PU
+前 b-VV s-PU
+在 b-NR s-PU
+连 b-NR s-PU
+云 b-NR b-NR
+港 e-NR e-NR
+开 b-NN b-NN
+发 b-NN m-NN
+区 e-NN e-NN
+建 b-VV b-VV
+成 e-VV e-VV
+并 b-VV s-PU
+投 b-VV s-PU
+产 e-VV s-PU
+。 s-PU s-PU
 
-这 b-NR
-个 m-NR
-采 e-NR
-用 b-NN
-差 m-NN
-别 e-NN
-化 b-NN
-氨 m-NN
-伦 e-NN
-丝 b-NN
-生 m-NN
-产 e-NN
-技 b-NN
-术 e-NN
-改 b-NN
-造 m-NN
-的 e-NN
-项 b-NN
-目 m-NN
-， e-NN
-总 b-NN
-投 m-NN
-资 e-NN
-七 b-NN
-千 m-NN
-万 e-NN
-元 b-NN
-， m-NN
-累 e-NN
-计 b-NN
-年 m-NN
-产 e-NN
-氨 b-NN
-纶 m-NN
-丝 e-NN
-一 b-NN
-千 m-NN
-五 e-NN
-百 b-NR
-吨 m-NR
-。 e-NR
+这 b-NN s-PU
+个 b-NN s-PU
+采 b-NN b-VV
+用 b-NN e-VV
+差 b-NN b-NN
+别 e-NN m-NN
+化 e-NN e-NN
+氨 b-NN b-NN
+伦 m-NN m-NN
+丝 e-NN e-NN
+生 b-NN b-NN
+产 e-NN e-NN
+技 b-NN b-NN
+术 e-NN e-NN
+改 b-NN s-PU
+造 b-NN s-PU
+的 b-NN s-PU
+项 b-NN s-PU
+目 e-NN s-PU
+， s-PU s-PU
+总 b-NN s-PU
+投 b-NN s-PU
+资 e-NN s-PU
+七 e-NN s-PU
+千 e-NT s-PU
+万 e-VV s-PU
+元 s-PU s-PU
+， s-PU s-PU
+累 b-AD b-AD
+计 b-VV e-AD
+年 e-VV s-AD
+产 b-NN s-PU
+氨 b-NN b-NN
+纶 e-NN m-NN
+丝 e-NN e-NN
+一 e-NN s-PU
+千 e-NN s-PU
+五 e-NN s-PU
+百 b-VV s-PU
+吨 e-VV s-PU
+。 s-PU s-PU
 
-连 b-NR
-云 m-NR
-港 e-NR
-钟 b-NN
-山 m-NN
-氨 e-NN
-纶 b-NN
-丝 e-NN
-有 b-NN
-限 m-NN
-公 e-NN
-司 b-NN
-是 m-NN
-九 e-NN
-十 b-NN
-年 m-NN
-代 e-NN
-初 b-NN
-引 m-NN
-进 e-NN
-日 b-NR
-本 m-NR
-东 e-NR
-洋 b-NN
-纺 m-NN
-织 e-NN
-技 b-NN
-术 m-NN
-和 e-NN
-设 b-NN
-备 m-NN
-的 e-NN
-一 b-NN
-家 m-NN
-苏 e-NN
-港 b-NN
-合 m-NN
-资 e-NN
-企 b-NN
-业 m-NN
-， e-NN
-前 b-NN
-两 m-NN
-期 e-NN
-工 b-NN
-程 m-NN
-建 e-NN
-成 b-NN
-并 m-NN
-投 e-NN
-产 b-NN
-以 m-NN
-来 e-NN
-， b-NN
-已 m-NN
-累 e-NN
-计 b-NN
-实 m-NN
-现 e-NN
-利 b-NN
-润 m-NN
-一 e-NN
-点 b-NN
-四 m-NN
-七 e-NN
-亿 b-NN
-元 m-NN
-， e-NN
-跻 b-NR
-身 m-NR
-于 e-NR
-国 b-NN
-家 m-NN
-二 e-NN
-类 b-NN
-大 m-NN
-型 e-NN
-企 b-NN
-业 m-NN
-行 e-NN
-列 b-NN
-。 e-NN
+连 b-NR b-NR
+云 b-NR m-NR
+港 e-NR e-NR
+钟 e-NR b-NR
+山 e-NR e-NR
+氨 b-NN b-NN
+纶 e-NN m-NN
+丝 e-NN e-NN
+有 b-NN s-PU
+限 e-NN s-PU
+公 b-NN b-NN
+司 e-NN e-NN
+是 e-NN s-PU
+九 b-NT s-PU
+十 b-VV s-PU
+年 e-NT s-PU
+代 b-NN s-PU
+初 e-NN s-PU
+引 b-NN s-PU
+进 e-NN s-PU
+日 s-PU s-PU
+本 b-NN s-PU
+东 b-NN s-PU
+洋 b-NN s-PU
+纺 b-NN b-NN
+织 e-NN e-NN
+技 b-NN b-NN
+术 e-NN e-NN
+和 b-NN s-PU
+设 b-NN s-PU
+备 b-NN s-PU
+的 b-NN s-PU
+一 b-NN s-PU
+家 e-NN s-PU
+苏 s-PU s-PU
+港 b-NN s-PU
+合 b-NN s-PU
+资 e-NN s-PU
+企 b-NN s-PU
+业 e-NN s-PU
+， s-PU s-PU
+前 b-NN s-PU
+两 b-NN s-PU
+期 b-NN s-PU
+工 b-NN b-NN
+程 e-NN e-NN
+建 b-VV b-VV
+成 e-VV e-VV
+并 b-VV s-PU
+投 b-VV s-PU
+产 e-VV s-PU
+以 b-VV s-PU
+来 e-VV s-PU
+， s-PU s-PU
+已 s-PU b-AD
+累 b-NN e-AD
+计 b-NN b-AD
+实 b-NN e-AD
+现 b-NN s-PU
+利 b-NN s-PU
+润 e-NN s-PU
+一 e-NN s-PU
+点 b-VV s-PU
+四 e-VV s-PU
+七 s-PU s-PU
+亿 b-NN s-PU
+元 e-VV s-PU
+， s-PU s-PU
+跻 b-NN s-PU
+身 b-NN s-PU
+于 s-PU s-PU
+国 b-NN s-PU
+家 e-NN s-PU
+二 s-PU s-PU
+类 b-NN s-PU
+大 b-NN s-PU
+型 b-NN s-PU
+企 b-NN b-NN
+业 e-NN e-NN
+行 e-NN s-PU
+列 e-NN s-PU
+。 s-PU s-PU
 
-这 b-NN
-次 m-NN
-新 e-NN
-投 b-NN
-产 m-NN
-的 e-NN
-生 b-NN
-产 m-NN
-线 e-NN
-， b-VV
-由 e-VV
-该 b-NN
-公 m-NN
-司 e-NN
-自 b-NN
-行 m-NN
-设 e-NN
-计 b-NN
-， m-NN
-自 e-NN
-行 b-NN
-开 m-NN
-发 e-NN
-， b-NN
-自 m-NN
-行 e-NN
-调 b-NN
-试 m-NN
-。 e-NN
+这 e-NR s-PU
+次 b-NT s-AD
+新 b-VV s-AD
+投 b-VV s-PU
+产 b-NN s-PU
+的 b-NN s-PU
+生 b-NN b-NN
+产 e-NN e-NN
+线 e-NN s-PU
+， s-PU s-PU
+由 s-PU s-PU
+该 b-NN s-PU
+公 b-NN s-PU
+司 e-NN s-PU
+自 b-NR s-PU
+行 b-AD b-AD
+设 b-VV e-AD
+计 e-VV s-PU
+， s-PU s-PU
+自 b-AD b-AD
+行 b-VV e-AD
+开 b-VV s-PU
+发 e-VV s-PU
+， s-PU s-PU
+自 b-AD b-AD
+行 b-VV e-AD
+调 b-VV s-PU
+试 e-VV s-PU
+。 s-PU s-PU
 
-设 b-NN
-备 m-NN
-从 e-NN
-安 b-NN
-装 m-NN
-到 e-NN
-投 b-NN
-产 m-NN
-只 e-NN
-用 b-NN
-了 m-NN
-三 e-NN
-个 b-NN
-月 m-NN
-时 e-NN
-间 b-NN
-， m-NN
-开 e-NN
-发 b-NN
-了 m-NN
-企 e-NN
-业 b-NN
-自 m-NN
-己 e-NN
-的 b-NN
-专 m-NN
-利 e-NN
-技 b-NN
-术 m-NN
-， e-NN
-为 b-NN
-公 m-NN
-司 e-NN
-下 b-NN
-一 m-NN
-步 e-NN
-对 b-NN
-外 m-NN
-输 e-NN
-出 b-NN
-氨 m-NN
-伦 e-NN
-丝 b-NN
-生 m-NN
-产 e-NN
-技 b-NN
-术 m-NN
-奠 e-NN
-定 b-NN
-了 m-NN
-基 e-NN
-础 s-PU
-。 s-PU
+设 b-NN b-NN
+备 e-NN m-NN
+从 e-NN e-NN
+安 b-NN s-PU
+装 e-NN s-PU
+到 e-NN s-PU
+投 b-NN s-PU
+产 e-NN s-PU
+只 b-VV s-PU
+用 e-VV s-PU
+了 b-VV s-PU
+三 e-VV s-PU
+个 b-VV b-AD
+月 e-VV e-AD
+时 b-NN s-PU
+间 e-VV s-PU
+， s-PU b-AD
+开 b-VV e-AD
+发 e-VV s-PU
+了 e-NN s-PU
+企 b-NN s-PU
+业 e-NN s-PU
+自 s-PU s-PU
+己 b-NN b-VV
+的 b-NN e-VV
+专 b-NN b-NN
+利 e-NN e-NN
+技 b-NN b-NN
+术 e-NN e-NN
+， s-PU s-PU
+为 b-NN s-PU
+公 b-NN s-PU
+司 e-NN s-PU
+下 s-PU s-PU
+一 e-NR s-PU
+步 s-PU s-PU
+对 s-PU s-PU
+外 b-NN s-PU
+输 b-NN s-PU
+出 b-NN s-PU
+氨 b-NN b-NN
+伦 m-NN m-NN
+丝 e-NN e-NN
+生 b-NN b-NN
+产 e-NN e-NN
+技 b-NN b-NN
+术 e-NN e-NN
+奠 b-NN s-PU
+定 b-NN s-PU
+了 e-NN s-PU
+基 b-NN s-PU
+础 e-NN s-PU
+。 s-PU s-PU
 
-（ s-PU
-完 s-PU
-） s-PU
+（ s-PU s-PU
+完 b-NN s-PU
+） s-PU s-PU
 
-中 b-NR
-国 e-NR
-鼓 b-NN
-励 m-NN
-民 e-NN
-营 b-NN
-企 m-NN
-业 e-NN
-家 b-NN
-投 m-NN
-资 e-NN
-国 b-NN
-家 m-NN
-基 e-NN
-础 b-NN
-建 m-NN
-设 e-NN
+中 b-NR b-NR
+国 e-NR e-NR
+鼓 b-VV b-VV
+励 e-VV e-VV
+民 b-JJ s-PU
+营 e-JJ s-PU
+企 b-NN b-NN
+业 e-NN m-NN
+家 e-NN e-NN
+投 b-NN b-NN
+资 e-NN e-NN
+国 b-NN b-NN
+家 e-NN e-NN
+基 b-NN b-NN
+础 e-NN e-NN
+建 b-NN s-PU
+设 e-NN s-PU
 
-新 b-NN
-华 m-NN
-社 e-NN
-南 b-NR
-昌 e-NR
-十 b-NN
-二 m-NN
-月 e-NN
-七 b-NN
-日 e-NN
-电 b-NN
-（ m-NN
-记 e-NN
-者 b-NR
-蒋 m-NR
-秋 e-NR
-生 b-NR
-、 e-NR
-李 b-NR
-平 e-NR
-、 s-PU
-刘 b-NR
-义 m-NR
-） e-NR
+新 b-NN b-NN
+华 m-NN m-NN
+社 e-NN e-NN
+南 b-NR b-NR
+昌 e-NR e-NR
+十 b-NT b-NT
+二 b-VV m-NT
+月 e-NT e-NT
+七 b-NT b-NT
+日 e-NT e-NT
+电 e-NT s-PU
+（ s-PU s-PU
+记 b-NN s-PU
+者 e-NN s-PU
+蒋 b-NR s-PU
+秋 s-PU s-PU
+生 e-NR s-PU
+、 s-PU s-PU
+李 b-NR s-PU
+平 s-PU s-PU
+、 s-PU s-PU
+刘 s-PU s-PU
+义 e-NR s-PU
+） s-PU s-PU
 
