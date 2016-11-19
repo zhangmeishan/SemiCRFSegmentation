@@ -88,7 +88,7 @@ public:
 				word_inputs[idx][idy].init(hyper_params.wordDim, hyper_params.dropProb, mem);
 			}
 
-			token_repsents[idx].init(hyper_params.unitSize, -1, NULL);
+			token_repsents[idx].init(hyper_params.unitSize, -1, mem);
 			word_hidden1[idx].setParam(&model_params._tanh1_project);
 			word_hidden1[idx].init(hyper_params.hiddenSize1, hyper_params.dropProb, mem);
 			word_hidden2[idx].setParam(&model_params._tanh2_project);
@@ -108,7 +108,7 @@ public:
 			seg_hidden1[idx].init(hyper_params.segHiddenSize, hyper_params.dropProb, mem);
 			seg_hidden1[idx].setFunctions(&frelu, &drelu);
 			output[idx].setParam(&model_params._olayer_linear);
-			output[idx].init(hyper_params.segLabelSize, hyper_params.dropProb, mem);
+			output[idx].init(hyper_params.segLabelSize, -1, mem);
 		}
 	}
 

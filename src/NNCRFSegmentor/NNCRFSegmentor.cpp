@@ -260,6 +260,7 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 	for (int idx = 0; idx < typeNum; idx++){
 		m_type_stats[idx][unknownkey] = 1; // use the s
 		m_driver._modelparams.typeAlphas[idx].initial(m_type_stats[idx], 0);
+		cout << idx << " , "<< m_type_stats[idx].size() << endl;
 		if (m_options.typeFiles.size() > idx && m_options.typeFiles[idx] != "") {
 			m_driver._modelparams.types[idx].initial(&(m_driver._modelparams.typeAlphas[idx]), m_options.typeFiles[idx], m_options.typeEmbFineTune);
 		}
@@ -313,7 +314,7 @@ void Segmentor::train(const string& trainFile, const string& devFile, const stri
 			eval.correct_label_count += m_driver._eval.correct_label_count;
 
 			if ((curUpdateIter + 1) % m_options.verboseIter == 0) {
-				m_driver.checkgrad(subExamples, curUpdateIter + 1);
+				//m_driver.checkgrad(subExamples, curUpdateIter + 1);
 				std::cout << "current: " << updateIter + 1 << ", total block: " << batchBlock << std::endl;
 				std::cout << "Cost = " << cost << ", Tag Correct(%) = " << eval.getAccuracy() << std::endl;
 			}
