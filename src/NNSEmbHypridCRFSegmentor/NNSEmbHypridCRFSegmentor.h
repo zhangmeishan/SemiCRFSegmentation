@@ -41,7 +41,7 @@ public:
 	Driver m_driver;
 
 public:
-	Segmentor();
+	Segmentor(int memsize);
 	virtual ~Segmentor();
 
 public:

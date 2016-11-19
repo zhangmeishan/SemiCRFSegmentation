@@ -75,18 +75,15 @@ public:
 	}
 
 	void exportCheckGradParams(CheckGrad& checkgrad){
-		checkgrad.add(&(_words.E), "words.E");
-		for (int idx = 0; idx < _types.size(); idx++){
-			stringstream ss;
-			ss << "types[" << idx << "].E";
-			checkgrad.add(&_types[idx].E, ss.str());
-		}
 		checkgrad.add(&_tanh1_project.W, "_tanh1_project.W");
 		checkgrad.add(&_tanh1_project.b, "_tanh1_project.b");
 		checkgrad.add(&_tanh2_project.W1, "_tanh2_project.W1");
 		checkgrad.add(&_tanh2_project.W2, "_tanh2_project.W2");
 		checkgrad.add(&_tanh2_project.b, "_tanh2_project.b");
-
+		checkgrad.add(&_seglayer_project.B.W, "_seglayer_project.B.W");
+		checkgrad.add(&_seglayer_project.M.W, "_seglayer_project.M.W");
+		checkgrad.add(&_seglayer_project.E.W, "_seglayer_project.E.W");;
+		checkgrad.add(&_seglayer_project.S.W, "_seglayer_project.S.W");;
 
 	}
 

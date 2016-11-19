@@ -30,13 +30,6 @@ public:
 	int max_seg_length;
 	int type_num;
 
-	//dropout nodes
-	vector<vector<DropNode> > word_inputs_drop;
-	vector<DropNode> word_hidden1_drop;
-	vector<DropNode> word_hidden2_drop;
-	vector<DropNode> seg_inputs_drop;
-	vector<DropNode> seg_hidden1_drop;
-
 	// node pointers
 public:
 	ComputionGraph() : Graph(){
@@ -67,12 +60,6 @@ public:
 		seg_inputs.resize(segNum);
 		seg_hidden1.resize(segNum);
 		output.resize(segNum);
-
-		resizeVec(word_inputs_drop, sent_length, type_num + 1);
-		word_hidden1_drop.resize(sent_length);
-		word_hidden2_drop.resize(sent_length);
-		seg_inputs_drop.resize(segNum);
-		seg_hidden1_drop.resize(segNum);
 	}
 
 	inline void clear(){
@@ -89,48 +76,39 @@ public:
 		seg_hidden1.clear();
 		output.clear();
 		output_bmes.clear();
-
-		clearVec(word_inputs_drop);
-		word_hidden1_drop.clear();
-		word_hidden2_drop.clear();
-		seg_inputs_drop.clear();
-		seg_hidden1_drop.clear();
 	}
 
 public:
-	inline void initial(ModelParams& model_params, HyperParams& hyper_params){
+	inline void initial(ModelParams& model_params, HyperParams& hyper_params, AlignedMemoryPool* mem = NULL){
 		for (int idx = 0; idx < word_inputs.size(); idx++) {
 			word_inputs[idx][0].setParam(&model_params._words);
+			word_inputs[idx][0].init(hyper_params.wordDim, hyper_params.dropProb, mem);
 			for (int idy = 1; idy < word_inputs[idx].size(); idy++){
 				word_inputs[idx][idy].setParam(&model_params._types[idy - 1]);
+				word_inputs[idx][idy].init(hyper_params.wordDim, hyper_params.dropProb, mem);
 			}
 
-			for (int idy = 0; idy < word_inputs[idx].size(); idy++){
-				word_inputs_drop[idx][idy].setDropValue(hyper_params.dropProb);
-			}
-
+			token_repsents[idx].init(hyper_params.unitSize, -1, mem);
 			word_hidden1[idx].setParam(&model_params._tanh1_project);
-			word_hidden1[idx].setFunctions(&tanh, &tanh_deri);
-			word_hidden1_drop[idx].setDropValue(hyper_params.dropProb);
-
+			word_hidden1[idx].init(hyper_params.hiddenSize1, hyper_params.dropProb, mem);
 			word_hidden2[idx].setParam(&model_params._tanh2_project);
-			word_hidden2[idx].setFunctions(&tanh, &tanh_deri);
-			word_hidden2_drop[idx].setDropValue(hyper_params.dropProb);
+			word_hidden2[idx].init(hyper_params.hiddenSize2, hyper_params.dropProb, mem);
 			output_bmes[idx].setParam(&model_params._olayerbmes_linear);
+			output_bmes[idx].init(hyper_params.labelSize, hyper_params.dropProb, mem);
 		}
-		word_window.setContext(hyper_params.wordContext);
-		left_lstm.setParam(&model_params._left_lstm_project, hyper_params.dropProb, true);
-		right_lstm.setParam(&model_params._right_lstm_project, hyper_params.dropProb, false);
+		word_window.init(hyper_params.unitSize, hyper_params.wordContext, mem);
+		left_lstm.init(&model_params._left_lstm_project, hyper_params.dropProb, true, mem);
+		right_lstm.init(&model_params._right_lstm_project, hyper_params.dropProb, false, mem);
 
 		for (int idx = 0; idx < output.size(); idx++){
-			outputseg[idx].setParam(&model_params._seglayer_project, hyper_params.dropProb);
-			outputseg[idx].setFunctions(&tanh, &tanh_deri);
+			outputseg[idx].init(&model_params._seglayer_project, hyper_params.dropProb, mem);
 			seg_inputs[idx].setParam(&model_params._segs);
-			seg_inputs_drop[idx].setDropValue(hyper_params.dropProb);
+			seg_inputs[idx].init(hyper_params.segDim, hyper_params.dropProb, mem);
 			seg_hidden1[idx].setParam(&model_params._segtanh_project);
-			seg_hidden1[idx].setFunctions(&relu, &relu_deri);
-			seg_hidden1_drop[idx].setDropValue(hyper_params.dropProb);
+			seg_hidden1[idx].init(hyper_params.segHiddenSize, hyper_params.dropProb, mem);
+			seg_hidden1[idx].setFunctions(&frelu, &drelu);
 			output[idx].setParam(&model_params._olayer_linear);
+			output[idx].init(hyper_params.segLabelSize, -1, mem);
 		}
 	}
 
@@ -147,16 +125,12 @@ public:
 			//input
 			word_inputs[idx][0].forward(this, feature.words[0]);
 
-			//drop out
-			word_inputs_drop[idx][0].forward(this, &word_inputs[idx][0]);
 
 			for (int idy = 1; idy < word_inputs[idx].size(); idy++){
 				word_inputs[idx][idy].forward(this, feature.types[idy - 1]);
-				//drop out
-				word_inputs_drop[idx][idy].forward(this, &word_inputs[idx][idy]);
 			}
 
-			token_repsents[idx].forward(this, getPNodes(word_inputs_drop[idx], word_inputs_drop[idx].size()));
+			token_repsents[idx].forward(this, getPNodes(word_inputs[idx], word_inputs[idx].size()));
 		}
 
 		//windowlized
@@ -166,19 +140,16 @@ public:
 			//feed-forward
 			word_hidden1[idx].forward(this, &(word_window._outputs[idx]));
 
-			word_hidden1_drop[idx].forward(this, &word_hidden1[idx]);
 		}
 
-		left_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size));
-		right_lstm.forward(this, getPNodes(word_hidden1_drop, seq_size));
+		left_lstm.forward(this, getPNodes(word_hidden1, seq_size));
+		right_lstm.forward(this, getPNodes(word_hidden1, seq_size));
 
 		for (int idx = 0; idx < seq_size; idx++) {
 			//feed-forward
-			word_hidden2[idx].forward(this, &(left_lstm._hiddens_drop[idx]), &(right_lstm._hiddens_drop[idx]));
+			word_hidden2[idx].forward(this, &(left_lstm._hiddens[idx]), &(right_lstm._hiddens[idx]));
 
-			word_hidden2_drop[idx].forward(this, &word_hidden2[idx]);
-
-			output_bmes[idx].forward(this, &word_hidden2_drop[idx]);
+			output_bmes[idx].forward(this, &word_hidden2[idx]);
 		}
 
 		
@@ -190,14 +161,12 @@ public:
 			const Feature& feature = features[idx];
 			segnodes.clear();
 			for (int dist = 0; idx + dist < seq_size && dist < max_seg_length; dist++) {
-				segnodes.push_back(&word_hidden2_drop[idx + dist]);
+				segnodes.push_back(&word_hidden2[idx + dist]);
 				outputseg[offset + dist].forward(this, segnodes);
 
 				seg_inputs[offset + dist].forward(this, feature.segs[dist]);
-				seg_inputs_drop[offset + dist].forward(this, &seg_inputs[offset + dist]);
 
-				seg_hidden1[offset + dist].forward(this, &(outputseg[offset + dist]._output_drop), &seg_inputs_drop[offset + dist]);
-				seg_hidden1_drop[offset + dist].forward(this, &seg_hidden1[offset + dist]);
+				seg_hidden1[offset + dist].forward(this, &(outputseg[offset + dist]._output), &seg_inputs[offset + dist]);
 			}
 		}
 
@@ -207,7 +176,7 @@ public:
 		for (int idx = 0; idx < seq_size; idx++) {
 			offset = idx * max_seg_length;
 			for (int dist = 0; idx + dist < seq_size && dist < max_seg_length; dist++) {
-				output[offset + dist].forward(this, &(seg_hidden1_drop[offset + dist]));
+				output[offset + dist].forward(this, &(seg_hidden1[offset + dist]));
 				poutput[idx][dist] = &output[offset + dist];
 			}
 		}

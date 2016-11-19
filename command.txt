@@ -1,4 +1,5 @@
 cmake .. -DEIGEN3_INCLUDE_DIR=/c/eigen/ -DN3L_INCLUDE_DIR=/d/github/LibN3L-2.0/
+cmake .. -DEIGEN3_INCLUDE_DIR=C:\eigen -DN3L_INCLUDE_DIR=D:\LibN3L-2.1
 
 -l -train D:\AAAI2017\segpos\train.ctb60.nnpos -dev D:\AAAI2017\segpos\dev.ctb60.nnpos -test D:\AAAI2017\segpos\test.ctb60.nnpos -option D:\AAAI2017\segpos\option.debug
 -train E:\segpos1\dev.ctb60 -dev E:\segpos1\dev.ctb60 -test E:\segpos1\dev.ctb60 -option E:\segpos1\option.debug -l

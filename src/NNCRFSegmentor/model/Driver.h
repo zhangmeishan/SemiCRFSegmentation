@@ -16,9 +16,9 @@
 
 class Driver{
 public:
-	Driver() {
-		_pcg = NULL;
-	}
+  Driver(int memsize) : aligned_mem(memsize){
+	  _pcg = NULL;
+  }
 
 	~Driver() {
 		if (_pcg != NULL)
@@ -35,6 +35,7 @@ public:
 	CheckGrad _checkgrad;
 	ModelUpdate _ada;  // model update
 
+	AlignedMemoryPool aligned_mem;
 
 public:
 	//embeddings are initialized before this separately.
@@ -43,7 +44,7 @@ public:
 			std::cout << "hyper parameter initialization Error, Please check!" << std::endl;
 			return;
 		}
-		if (!_modelparams.initial(_hyperparams)){
+		if (!_modelparams.initial(_hyperparams, &aligned_mem)){
 			std::cout << "model parameter initialization Error, Please check!" << std::endl;
 			return;
 		}
@@ -54,7 +55,9 @@ public:
 
 		_pcg = new ComputionGraph();
 		_pcg->createNodes(ComputionGraph::max_sentence_length, _modelparams.types.size());
-		_pcg->initial(_modelparams, _hyperparams);
+		_pcg->initial(_modelparams, _hyperparams, &aligned_mem);
+		
+		std::cout << "allocated memory: " << aligned_mem.capacity << ", total required memory: " << aligned_mem.required << ", perc = " << aligned_mem.capacity*1.0 / aligned_mem.required << std::endl;
 
 		setUpdateParameters(_hyperparams.nnRegular, _hyperparams.adaAlpha, _hyperparams.adaEps);
 	}
@@ -65,8 +68,6 @@ public:
 
 		int example_num = examples.size();
 		dtype cost = 0.0;
-
-		static vector<PMat> tpmats;
 
 		for (int count = 0; count < example_num; count++) {
 			const Example& example = examples[count];

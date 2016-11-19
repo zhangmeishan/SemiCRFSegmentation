@@ -6,7 +6,7 @@
 
 class Driver {
 public:
-	Driver() {
+	Driver(int memsize) :_aligned_mem(memsize){
 		_pcg = NULL;
 	}
 
@@ -30,6 +30,8 @@ public:
 
 	HyperParams _hyper_params;
 
+	AlignedMemoryPool _aligned_mem;
+
 public:
 	//embeddings are initialized before this separately.
 	inline void initial(){
@@ -48,7 +50,9 @@ public:
 
 		_pcg = new ComputionGraph();
 		_pcg->createNodes(ComputionGraph::max_sentence_length, _hyper_params.maxsegLen, _model_params._types.size());
-		_pcg->initial(_model_params, _hyper_params);
+		_pcg->initial(_model_params, _hyper_params, &_aligned_mem);
+
+		std::cout << "allocated memory: " << _aligned_mem.capacity << ", total required memory: " << _aligned_mem.required << ", perc = " << _aligned_mem.capacity*1.0 / _aligned_mem.required << std::endl;
 
 		setUpdateParameters(_hyper_params.nnRegular, _hyper_params.adaAlpha, _hyper_params.adaEps);
 	}
@@ -58,8 +62,6 @@ public:
 
 		int example_num = examples.size();
 		dtype cost = 0.0;
-
-		static vector<PMat> tpmats;
 
 		for (int count = 0; count < example_num; count++) {
 			const Example& example = examples[count];

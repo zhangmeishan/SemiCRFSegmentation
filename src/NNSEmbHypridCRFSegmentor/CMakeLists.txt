@@ -4,4 +4,5 @@ include_directories(
 )
 
 add_executable(NNSEmbHypridCRFSegmentor NNSEmbHypridCRFSegmentor.cpp)
+#target_link_libraries(NNSEmbHypridCRFSegmentor ${LIBS})
 

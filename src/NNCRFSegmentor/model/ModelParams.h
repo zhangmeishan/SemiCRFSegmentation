@@ -17,6 +17,7 @@ public:
 	LSTM1Params right_lstm_project; //right lstm
 	UniParams tanh1_project; // hidden
 	BiParams tanh2_project; // hidden
+	UniParams tanh3_project; // output
 	UniParams olayer_linear; // output
 
 
@@ -26,7 +27,7 @@ public:
 
 
 public:
-	bool initial(HyperParams& opts){
+	bool initial(HyperParams& opts, AlignedMemoryPool* mem){
 
 		// some model parameters should be initialized outside
 		if (words.nVSize <= 0 || labelAlpha.size() <= 0){
@@ -46,11 +47,12 @@ public:
 		opts.labelSize = labelAlpha.size();
 		opts.inputsize = opts.wordwindow * opts.unitsize;
 
-		tanh1_project.initial(opts.hiddensize, opts.inputsize, true);
-		left_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize);
-		right_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize);
-		tanh2_project.initial(opts.hiddensize, opts.rnnhiddensize, opts.rnnhiddensize, true);
-		olayer_linear.initial(opts.labelSize, opts.hiddensize, false);
+		tanh1_project.initial(opts.hiddensize, opts.inputsize, true, mem);
+		left_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize, mem);
+		right_lstm_project.initial(opts.rnnhiddensize, opts.hiddensize, mem);
+		tanh2_project.initial(opts.hiddensize, opts.rnnhiddensize, opts.rnnhiddensize, true, mem);
+		tanh3_project.initial(opts.hiddensize, opts.hiddensize, true, mem);
+		olayer_linear.initial(opts.labelSize, opts.hiddensize, false, mem);
 
 		loss.initial(opts.labelSize);
 
@@ -67,6 +69,7 @@ public:
 		left_lstm_project.exportAdaParams(ada);
 		right_lstm_project.exportAdaParams(ada);
 		tanh2_project.exportAdaParams(ada);
+		tanh3_project.exportAdaParams(ada);
 		olayer_linear.exportAdaParams(ada);
 		loss.exportAdaParams(ada);
 	}
@@ -82,10 +85,15 @@ public:
 		checkgrad.add(&(tanh1_project.W), "tanh1_project.W");
 		checkgrad.add(&(tanh1_project.b), "tanh1_project.b");
 
-
 		checkgrad.add(&(tanh2_project.W1), "tanh2_project.W1");
 		checkgrad.add(&(tanh2_project.W2), "tanh2_project.W2");
 		checkgrad.add(&(tanh2_project.b), "tanh2_project.b");
+
+		checkgrad.add(&(tanh3_project.W), "tanh3_project.W");
+		checkgrad.add(&(tanh3_project.b), "tanh3_project.b");
+
+		checkgrad.add(&(olayer_linear.W), "olayer_linear.W");
+		checkgrad.add(&(loss.T), "loss.T");
 	}
 
 	// will add it later

@@ -30,9 +30,9 @@ struct SegParams {
 		merge.exportAdaParams(ada);
 	}
 
-	inline void initial(int nOSize, int nHSize, int nISize) {
-		H.initial(nHSize, nISize, true);
-		merge.initial(nOSize, nHSize, nHSize, nHSize, true);
+	inline void initial(int nOSize, int nHSize, int nISize, AlignedMemoryPool* mem = NULL) {
+		H.initial(nHSize, nISize, true, mem);
+		merge.initial(nOSize, nHSize, nHSize, nHSize, true, mem);
 		inDim = nISize;
 		outDim = nOSize;
 		hiddenDim = nHSize;		
@@ -40,7 +40,7 @@ struct SegParams {
 };
 
 // we can rewrite it as one node, but many duplicated codes
-class SegBuilder : NodeBuilder{
+class SegBuilder {
 public:
 	SegParams* _param;
 
@@ -54,8 +54,6 @@ public:
 	MaxPoolNode _max;
 	MinPoolNode _min;
 	vector<UniNode> _tnodes;
-	vector<DropNode> _tnodes_drop;
-	DropNode _output_drop;
 
 public:
 	SegBuilder(){
@@ -66,22 +64,28 @@ public:
 		clear();
 	}
 
-	inline void setParam(SegParams* paramInit, dtype dropout) {
+	inline void init(SegParams* paramInit, dtype dropout, AlignedMemoryPool* mem = NULL) {
 		_param = paramInit;
 		_inDim = _param->inDim;
 		_outDim = _param->outDim;
 		_hiddenDim = _param->hiddenDim;
 		_output.setParam(&_param->merge);
+		_output.init(_outDim, dropout, mem);
+		_sum.setParam(_hiddenDim);
+		_sum.init(_hiddenDim, -1, mem);
+		_max.setParam(_hiddenDim);
+		_max.init(_hiddenDim, -1, mem);
+		_min.setParam(_hiddenDim);
+		_min.init(_hiddenDim, -1, mem);
 
 		for (int idx = 0; idx < _tnodes.size(); idx++){
 			_tnodes[idx].setParam(&(_param->H));
-			_tnodes_drop[idx].setDropValue(dropout);			
+			_tnodes[idx].init(_hiddenDim, dropout, mem);
 		}
-		_output_drop.setDropValue(dropout);
 	}
 
-	inline void setFunctions(Mat(*f)(const Mat&),
-		Mat(*f_deri)(const Mat&, const Mat&)) {
+	inline void setFunctions(dtype(*f)(const dtype&),
+		dtype(*f_deri)(const dtype&, const dtype&)) {
 		for (int idx = 0; idx < _tnodes.size(); idx++){
 			_tnodes[idx].setFunctions(f, f_deri);
 		}
@@ -90,12 +94,10 @@ public:
 
 	inline void resize(int maxsize){
 		_tnodes.resize(maxsize);
-		_tnodes_drop.resize(maxsize);
 	}
 
 	inline void clear(){
 		_tnodes.clear();
-		_tnodes_drop.clear();
 		_param = NULL;
 		_inDim = 0;
 		_outDim = 0;
@@ -112,21 +114,19 @@ public:
 		}
 
 		_nSize = x.size();
-		if (x[0]->val.rows() != _inDim){
+		if (x[0]->val.dim != _inDim){
 			std::cout << "input dim does not match for seg operation" << std::endl;
 			return;
 		}
 
 		for (int idx = 0; idx < _nSize; idx++){
 			_tnodes[idx].forward(cg, x[idx]);
-			_tnodes_drop[idx].forward(cg, &_tnodes[idx]);
 		}
 
-		_sum.forward(cg, getPNodes(_tnodes_drop, _nSize));
-		_max.forward(cg, getPNodes(_tnodes_drop, _nSize));
-		_min.forward(cg, getPNodes(_tnodes_drop, _nSize));
+		_sum.forward(cg, getPNodes(_tnodes, _nSize));
+		_max.forward(cg, getPNodes(_tnodes, _nSize));
+		_min.forward(cg, getPNodes(_tnodes, _nSize));
 		_output.forward(cg, &_sum, &_max, &_min);
-		_output_drop.forward(cg, &_output);
 	}
 
 };
